@@ -20,8 +20,10 @@ void	parent_process()
 void	child_process(int f1, )
 {
 
+
 }
 
+//Get command count !
 void	pipex(int f1, int f2)
 {
 	int	end[2];
@@ -31,5 +33,12 @@ void	pipex(int f1, int f2)
 	pid = fork();
 	if (pid < 0)
 		return (perror("OMG NO\n"));
-
+	if (pid == 0)
+	{
+		printf("child process\n");
+	}
+	else
+	{
+		printf("parrent process\n");
+	}
 }
