@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_tolower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/06 20:20:41 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/06 20:21:28 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
-
-#include <unistd.h>
-#include <stdlib.h>
-
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+int	ft_tolower(int c)
+{
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
+}

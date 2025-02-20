@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/11 13:40:32 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/14 15:47:37 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
+void	ft_putchar_fd(char c, int fd)
+{
+	if (fd == -1)
+		return ;
+	write(fd, &c, 1);
+}
+/*
+int	main(void)
+{
+	int	fd;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+	fd = open("test.txt",O_WRONLY);
+	ft_putchar_fd('z', fd);
+	close(fd);
+	return (0);
+}*/

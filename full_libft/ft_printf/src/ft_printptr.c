@@ -1,26 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_printptr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/16 20:03:00 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/18 17:43:17 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include <stdint.h>
+#include "ft_printf.h"
 
-#include <unistd.h>
-#include <stdlib.h>
+int	ft_putptr(size_t n)
+{
+	char		*low_base;
+	int			len;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
+	len = 0;
+	low_base = "0123456789abcdef";
+	if (n >= 16)
+		len += ft_putptr(n / 16);
+	ft_printchar(low_base[n % 16]);
+	len++;
+	return (len);
+}
 
-#endif 
+int	ft_printptr(size_t n)
+{
+	int	len;
+
+	len = 0;
+	if (!n)
+		return (ft_printstr("(nil)"));
+	len += ft_printstr("0x");
+	len += ft_putptr(n);
+	return (len);
+}

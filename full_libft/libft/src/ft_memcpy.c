@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/07 13:33:33 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/14 14:34:49 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include <stdio.h>
 
-#include <unistd.h>
-#include <stdlib.h>
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char	*d;
+	unsigned char	*s;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+	if (!dest && !src)
+		return (NULL);
+	s = (unsigned char *)src;
+	d = (unsigned char *)dest;
+	while (n-- > 0)
+		*d++ = *s++;
+	return (dest);
+}

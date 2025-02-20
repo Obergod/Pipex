@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/06 18:57:06 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/14 14:30:12 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+	i = 0;
+	if (n < 1)
+		return (0);
+	while (s1[i] && s2[i] && s1[i] == s2[i] && i < n - 1)
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}

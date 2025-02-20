@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_printnbs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/16 16:46:14 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/18 15:50:22 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "ft_printf.h"
 
-#include <unistd.h>
-#include <stdlib.h>
+int	ft_printnbs(int nb)
+{
+	long	n;
+	int		len;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+	len = 0;
+	n = nb;
+	if (n < 0)
+	{
+		ft_printchar('-');
+		n = -n;
+		len++;
+	}
+	if (n >= 10)
+		len += ft_printnbs(n / 10);
+	ft_printchar(n % 10 + '0');
+	len++;
+	return (len);
+}

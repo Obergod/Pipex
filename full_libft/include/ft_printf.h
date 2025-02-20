@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/16 19:33:29 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/18 19:38:02 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
 
-#include <unistd.h>
-#include <stdlib.h>
+# include <stdio.h>
+# include <unistd.h>
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
+int	ft_printf(const char *str, ...);
+int	ft_printnbr_base(size_t nbr, char c);
+int	ft_printchar(char c);
+int	ft_printstr(char *s);
+int	ft_printnbs(int nb);
+int	ft_printunsigned(unsigned int n);
+int	ft_printptr(size_t n);
 
-#endif 
+#endif

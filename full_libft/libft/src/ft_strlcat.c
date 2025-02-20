@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/06 18:53:38 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/06 18:54:44 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
+#include <stdio.h>
 
-#include <unistd.h>
-#include <stdlib.h>
+size_t	ft_strlcat(char *dest, const char *src, size_t size)
+{
+	int		i;
+	int		j;
+	size_t	len;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+	len = ft_strlen(dest);
+	i = 0;
+	j = len;
+	if (len >= size)
+		return (ft_strlen(src) + size);
+	while (src[i] && (size_t)i < (size - len - 1))
+	{
+		dest[j + i] = src[i];
+		i++;
+	}
+	dest[j + i] = '\0';
+	return (ft_strlen(src) + len);
+}

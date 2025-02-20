@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/11 18:49:26 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/14 19:18:12 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
+char	*ft_strchr(const char *s, int c)
+{
+	char	*stock;
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
-
-#endif 
+	if ((unsigned char)c == '\0')
+	{
+		stock = (char *)s + ft_strlen(s);
+		return (stock);
+	}
+	while (*s)
+	{
+		if (*s == (unsigned char)c)
+		{
+			stock = (char *)s;
+			return (stock);
+		}
+		s++;
+	}
+	return (NULL);
+}

@@ -1,26 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 14:01:56 by mafioron          #+#    #+#             */
-/*   Updated: 2025/02/20 14:02:01 by mafioron         ###   ########.fr       */
+/*   Created: 2024/11/11 15:18:08 by mafioron          #+#    #+#             */
+/*   Updated: 2024/11/14 19:16:06 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
+void	ft_lstadd_front(t_list **lst, t_list *new)
+{
+	new->next = *lst;
+	*lst = new;
+}
+/*
+int	main()
+{
+	t_list	*one;
+	t_list	*two;
+	int	i[2] = {1, 2};
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-    struct s_content *next;
-	pid_t	pid;
-} t_content;
+	one = ft_lstnew(&i[0]);
+	two = ft_lstnew(&i[1]);
+	printf("this is one : %d\n", *(int *)one->content);
 
-#endif 
+	ft_lstadd_front(&one, two);
+	while(one)
+	{
+		printf("this is int : %d\n", *(int *)one->content);	
+		one = one->next;
+	}
+}*/

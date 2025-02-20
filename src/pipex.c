@@ -25,50 +25,53 @@ void	child_process(int f1, )
 
 t_cmd	*get_cmd(int ac, char **av)
 {
-	t_cmd	*cmd;
 
-	cmd = malloc(sizeof(t_cmd));
-	cmd->wc_cmd = ac - 3;
 	//parse to get all cmd (strlen for malloc ?)
 	//get_all_file etc...
 }
 
-void	pipex(int f1, int f2, int nb_cmd)
+void	pipex(t_content *cmd, int fd_in, int fd_out, int nb_cmd)
 {
-	int	*pipes[2];
 	pid_t	*pid;
+	int		pipes[2];
 	int		i;
+	int 	*prev_pipe; //pointeur ?
 
-	i = -1;
+	i = 0;
 	pid = malloc(sizeof(pid_t) * nb_cmd);
 	if (!pid)
 		return ;
-	pipes = malloc(sizeof(int *) * nb_cmd - 1);
-	if (!pipes)
+	prev_pipe = fd_in;
+	while (cmd)
 	{
-		free(pid);
-		return ;
-	}
-	while (++i < nb_cmd - 1)
-		pipe(pipes[i]);
-	i = -1;
-	while (++i < nb_cmd)
-	{
-		pid[i] = fork();
+		if (cmd->next)
+			pipe(pipes);
+
+		pid[i++] = fork();
 		if (pid < 0)
 		{
 			//free pipes and pid
-			return (perror("OMG NO\n"));
+			perror("OMG NO\n");
+			exit(1);
 		}
+		if (pid == 0)
+		{
+			dup2(prev_pipe, STDIN_FILENO);
+			printf("child process\n");
+		}
+		else
+		{
+			printf("parrent process\n");
+		}
+	}
 		//need to find a way to link in and out. dup2 ?
-	}
+}
 	// need to use execv linked to the cmds
-	if (pid == 0)
+int	main(int ac, char **av, char **envp)
+{
+	while(envp[i])
 	{
-		printf("child process\n");
-	}
-	else
-	{
-		printf("parrent process\n");
+		strcmp(envp[i], "PATH=", 5)
+			char *paths = split(envp[i], ":");
 	}
 }
