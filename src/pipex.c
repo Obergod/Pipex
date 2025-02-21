@@ -32,37 +32,48 @@ t_cmd	*get_cmd(int ac, char **av)
 
 void	pipex(t_content *cmd, int fd_in, int fd_out, int nb_cmd)
 {
-	pid_t	*pid;
+	pid_t	pid; //pointeur ?
 	int		pipes[2];
 	int		i;
-	int 	*prev_pipe; //pointeur ?
-
-	i = 0;
-	pid = malloc(sizeof(pid_t) * nb_cmd);
+	int 	prev_pipe;
+	/*pid = malloc(sizeof(pid_t) * nb_cmd);
 	if (!pid)
-		return ;
+		return ;*/
+	if (!data || !data->cmd_list || input_fd < 0 || output_fd < 0)
+		return (handle_error());
+	i = 0;
 	prev_pipe = fd_in;
 	while (cmd)
 	{
 		if (cmd->next)
 			pipe(pipes);
-
-		pid[i++] = fork();
+		pid = fork();
 		if (pid < 0)
 		{
-			//free pipes and pid
 			perror("OMG NO\n");
 			exit(1);
 		}
-		if (pid == 0)
+		else if (pid == 0)
 		{
 			dup2(prev_pipe, STDIN_FILENO);
-			printf("child process\n");
+			if (cmd->next)
+				dup2(pipes[1], STDOUT_FILENO);
+			else
+				dup2(fd_out, STDOUT_FILENO);
 		}
+		execve(cmd->cmd_path, cmd->args, NULL);
 		else
 		{
-			printf("parrent process\n");
+			if (i == 1)
+				close(prev_pipe);
+			if (cmd->next)
+			{
+				prev_pipe = pipes[0];
+			}
+			close(pipes[1]);
 		}
+		cmd = cmd->next;
+		i = 1;
 	}
 		//need to find a way to link in and out. dup2 ?
 }
