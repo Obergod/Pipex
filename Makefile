@@ -35,7 +35,7 @@ INCS_DIR = include/
 LIBFT_INC = full_libft/include/
 
 #sources
-COMMON_SRC = pipex.c
+COMMON_SRC = pipex.c parsing.c
 
 #MAIN_SRC =
 

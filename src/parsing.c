@@ -16,14 +16,14 @@ char	*get_cmd_path(char **envp, char *cmd)
 {
 	int		i;
 	char	**cmd_path;
-	char	*temp;
-	char *full_path
+	char	*tmp;
+	char *full_path;
 
 	i = -1;
 	while (envp[++i])
 		if (!strncmp(envp[i], "PATH=", 5))
 		{
-			cmd_path = split(envp[i] + 5, ":");
+			cmd_path = ft_split(envp[i] + 5, ':');
 			break ;
 		}
 	if (!cmd_path)
@@ -72,11 +72,11 @@ t_content *create_node(char *cmd_str, char **envp)
 	node->cmd_path = get_cmd_path(envp, node->args[0]);
 	if (!node->cmd_path)
 	{
-		free_split(node->args);
+		ft_free_split(node->args);
 		return (NULL);
 	}
 	node->next = NULL;
-	pid = 0;
+	node->pid = 0;
 	return (node);	
 }
 
@@ -88,7 +88,7 @@ void	free_content(t_content *head)
 	{
 		temp = head->next;
 		if (head->args)
-			free_split(head->args);
+			ft_free_split(head->args);
 		if (head->cmd_path)
 			free(head->cmd_path);
 		free(head);
@@ -96,7 +96,7 @@ void	free_content(t_content *head)
 	}
 }
 
-t_content *init_content(char **evnp, char **av, int ac)
+t_content *init_content(int ac, char **av, char **envp)
 {
 	int	i;
 	t_content *head;
@@ -104,7 +104,7 @@ t_content *init_content(char **evnp, char **av, int ac)
 
 	i = 2;
 	check_files(av[1], av[ac - 1]);
-	head = create_node(av[i]);
+	head = create_node(av[i], envp);
 	if (!head)
 		exit (EXIT_FAILURE);
 	temp = head;

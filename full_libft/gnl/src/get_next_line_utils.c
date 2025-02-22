@@ -58,7 +58,7 @@ char	*ft_strdup(const char *s)
 	return (dst);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*gnl_strjoin(char const *s1, char const *s2)
 {
 	char	*res;
 	char	*stock;

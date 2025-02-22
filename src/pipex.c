@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
-
+/*
 void	parent_process()
 {
 
@@ -23,48 +23,48 @@ void	child_process(int f1, )
 
 }
 
-t_cmd	*get_cmd(int ac, char **av)
+*/
+void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 {
-
-	//parse to get all cmd (strlen for malloc ?)
-	//get_all_file etc...
-}
-
-void	pipex(t_content *cmd, int fd_in, int fd_out, int nb_cmd)
-{
-	pid_t	pid; //pointeur ?
-	int		pipes[2];
-	int		i;
-	int 	prev_pipe;
+	int			pipes[2];
+	int 		prev_pipe;
+	t_content	*head;
 	/*pid = malloc(sizeof(pid_t) * nb_cmd);
 	if (!pid)
 		return ;*/
-	if (!data || !data->cmd_list || input_fd < 0 || output_fd < 0)
-		return (handle_error());
-	i = 0;
+	/*if (fd_in < 0 || fd_out < 0)
+		return (exit);*/
 	prev_pipe = fd_in;
+	head = cmd;
 	while (cmd)
 	{
 		if (cmd->next)
 			pipe(pipes);
-		pid = fork();
-		if (pid < 0)
+		cmd->pid = fork();
+		if (cmd->pid < 0)
 		{
 			perror("OMG NO\n");
 			exit(1);
 		}
-		else if (pid == 0)
+		else if (cmd->pid == 0)
 		{
 			dup2(prev_pipe, STDIN_FILENO);
+			close(prev_pipe);
 			if (cmd->next)
+			{
 				dup2(pipes[1], STDOUT_FILENO);
+				close(pipes[1]);
+				close(pipes[0]);
+			}
 			else
 				dup2(fd_out, STDOUT_FILENO);
+			execve(cmd->cmd_path, cmd->args, NULL);
+			perror("Child Process failed");
+			exit(EXIT_FAILURE);
 		}
-		execve(cmd->cmd_path, cmd->args, NULL);
 		else
 		{
-			if (i == 1)
+			if (prev_pipe != fd_in)
 				close(prev_pipe);
 			if (cmd->next)
 			{
@@ -72,17 +72,44 @@ void	pipex(t_content *cmd, int fd_in, int fd_out, int nb_cmd)
 			}
 			close(pipes[1]);
 		}
-		cmd = cmd->next;
-		i = 1;
 	}
-		//need to find a way to link in and out. dup2 ?
+	cmd = head;
+	while(waitpid(cmd->pid, NULL, 0))
+		cmd = cmd->next;
+	if (prev_pipe != fd_in)
+		close(prev_pipe);
+	close(fd_in);
+	close(fd_out);
 }
-	// need to use execv linked to the cmds
 int	main(int ac, char **av, char **envp)
 {
-	while(envp[i])
+	t_content	*content;
+	int			fd_in;
+	int			fd_out;
+
+	fd_in = open(av[1], O_RDONLY);
+	if (fd_in < 0)
 	{
-		strcmp(envp[i], "PATH=", 5)
-			char *paths = split(envp[i], ":");
+		perror("Input File error");
+		exit(EXIT_FAILURE);
 	}
+	fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd_out < 0)
+	{
+		close(fd_in);
+		perror("Output File error");
+		exit(EXIT_FAILURE);
+	}
+	content = init_content(ac, av, envp);
+	pipex(content, fd_in, fd_out, envp);
+	close(fd_in);
+	close(fd_out);
+	return (0);
+	/*printf("cmd : %s\n", content->args[0]);
+	printf("cmd_path : %s\n", content->cmd_path);
+	//execve(content->cmd_path, content->args, NULL);
+	content = content->next;
+	printf("cmd : %s\n", content->args[0]);
+	printf("cmd_path : %s\n", content->cmd_path);
+	//execve(content->cmd_path, content->args, NULL);*/
 }

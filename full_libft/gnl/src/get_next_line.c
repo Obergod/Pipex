@@ -107,7 +107,7 @@ char	*get_next_line(int fd)
 		return (free(stock[fd]), stock[fd] = NULL, NULL);
 	if (!modif_strchr(stock[fd], '\n'))
 	{
-		buff = ft_strdup(stock[fd]);
+		buff = ft_strdu #include <sys/wait.h> p(stock[fd]);
 		return (free(stock[fd]), stock[fd] = NULL, buff);
 	}
 	else
@@ -119,7 +119,7 @@ char	*get_next_line(int fd)
 }
 /*
 #include <stdio.h>
-int main()
+int main(int argc, char **argv, char **envp)
 {
 	int fd;
 	int	fd2;
