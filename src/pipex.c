@@ -43,6 +43,11 @@ void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 		cmd->pid = fork();
 		if (cmd->pid < 0)
 		{
+			if (cmd->next)
+			{
+				close(pipes[1]);
+				close(pipes[0]);
+			}
 			perror("OMG NO\n");
 			exit(1);
 		}
@@ -58,7 +63,7 @@ void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 			}
 			else
 				dup2(fd_out, STDOUT_FILENO);
-			execve(cmd->cmd_path, cmd->args, NULL);
+			execve(cmd->cmd_path, cmd->args, envp);
 			perror("Child Process failed");
 			exit(EXIT_FAILURE);
 		}
@@ -69,13 +74,16 @@ void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 			if (cmd->next)
 			{
 				prev_pipe = pipes[0];
+				close(pipes[1]);
 			}
-			close(pipes[1]);
 		}
 	}
 	cmd = head;
-	while(waitpid(cmd->pid, NULL, 0))
+	while(cmd)
+	{
+		waitpid(cmd->pid, NULL, 0);
 		cmd = cmd->next;
+	}
 	if (prev_pipe != fd_in)
 		close(prev_pipe);
 	close(fd_in);
