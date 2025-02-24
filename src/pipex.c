@@ -76,6 +76,7 @@ void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 				prev_pipe = pipes[0];
 				close(pipes[1]);
 			}
+			cmd = cmd->next;
 		}
 	}
 	cmd = head;
@@ -95,11 +96,16 @@ int	main(int ac, char **av, char **envp)
 	int			fd_in;
 	int			fd_out;
 
-	fd_in = open(av[1], O_RDONLY);
-	if (fd_in < 0)
+	if (ac >= 2 && !ft_strcmp(av[1], "no_here_doc"))
+		no_here_doc(av[2]);
+	else
 	{
-		perror("Input File error");
-		exit(EXIT_FAILURE);
+		fd_in = open(av[1], O_RDONLY);
+		if (fd_in < 0)
+		{
+			perror("Input File error");
+			exit(EXIT_FAILURE);
+		}
 	}
 	fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_out < 0)
@@ -110,14 +116,18 @@ int	main(int ac, char **av, char **envp)
 	}
 	content = init_content(ac, av, envp);
 	pipex(content, fd_in, fd_out, envp);
+	free_content(content);
 	close(fd_in);
 	close(fd_out);
-	return (0);
-	/*printf("cmd : %s\n", content->args[0]);
-	printf("cmd_path : %s\n", content->cmd_path);
-	//execve(content->cmd_path, content->args, NULL);
-	content = content->next;
+	/*while (content)
+	{
 	printf("cmd : %s\n", content->args[0]);
 	printf("cmd_path : %s\n", content->cmd_path);
+	execve(content->cmd_path, content->args, envp);
+	content = content->next;
+	}*/
+	/*printf("cmd : %s\n", content->args[0]);
+	printf("cmd_path : %s\n", content->cmd_path);
 	//execve(content->cmd_path, content->args, NULL);*/
+	return (0);
 }

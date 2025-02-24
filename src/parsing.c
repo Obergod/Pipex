@@ -24,10 +24,12 @@ char	*get_cmd_path(char **envp, char *cmd)
 		if (!strncmp(envp[i], "PATH=", 5))
 		{
 			cmd_path = ft_split(envp[i] + 5, ':');
+			if (!cmd_path)
+				return (NULL);
 			break ;
 		}
-	if (!cmd_path)
-		return (NULL);
+	if (strncmp(envp[i], "PATH=", 5))
+		exit(EXIT_FAILURE);
 	i = -1;
 	while (cmd_path[++i])
 	{
@@ -35,13 +37,16 @@ char	*get_cmd_path(char **envp, char *cmd)
 		full_path = ft_strjoin(tmp, cmd);
 		free(tmp);
 		if (access(full_path, F_OK | X_OK) == 0)
+		{
+			ft_free_split(cmd_path);
 			return (full_path);
+		}
 		free(full_path);
 	}
 	return (NULL);
 }
 
-static int    check_files(char *infile, char *outfile)
+int    check_files_acess(char *infile, char *outfile)
 {
     if (access(infile, F_OK | R_OK) == -1)
     {
@@ -103,7 +108,7 @@ t_content *init_content(int ac, char **av, char **envp)
 	t_content *temp;
 
 	i = 2;
-	check_files(av[1], av[ac - 1]);
+	check_files_acess(av[1], av[ac - 1]);
 	head = create_node(av[i], envp);
 	if (!head)
 		exit (EXIT_FAILURE);

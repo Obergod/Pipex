@@ -15,9 +15,11 @@
 
 # include <unistd.h>
 # include <stdlib.h>
- #include <sys/wait.h>
+# include <sys/wait.h>
 
 # include "libft.h"
+//# include "ft_printf.h"
+//# include "get_next_next_line.h"
 
 typedef struct s_content {
     char **args;
@@ -31,10 +33,11 @@ typedef struct s_content {
 
 /*****		parsing		******/
 char		*get_cmd_path(char **envp, char *cmd);
-static int	check_files(char *infile, char *outfile);
+int			check_files_acess(char *infile, char *outfile);
 t_content	*create_node(char *cmd_str, char **envp);
 t_content 	*init_content(int ac, char **av, char **envp);
 void		free_content(t_content *head);
+void		no_here_doc(char *limiter);
 
 
 
