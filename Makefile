@@ -19,7 +19,7 @@ LIBFT = full_libft/libftfull.a
 CC = gcc
 #MAKEFLAGS += --silent
 WFLAGS = -Wall -Werror -Wextra
-CFLAGS += -I$(INCS_DIR) -I$(LIBFT_INC)
+CFLAGS += -I$(INCS_DIR) -I$(LIBFT_INC) $(WFLAGS) -g3
 
 
 #printing
@@ -35,7 +35,7 @@ INCS_DIR = include/
 LIBFT_INC = full_libft/include/
 
 #sources
-COMMON_SRC = pipex.c parsing.c
+COMMON_SRC = pipex.c parsing.c parsing2.c
 
 #MAIN_SRC =
 
@@ -57,7 +57,7 @@ $(LIBFT):
 	$(MAKE) -C full_libft re
 
 
-$(NAME): $(LIBFT) $(MLX) $(COMMON_OBJ)
+$(NAME): $(LIBFT) $(COMMON_OBJ)
 	@printf "$(CLEAR)$(YELLOW)Creating $(NAME)..."
 	@$(CC) $(COMMON_OBJ) $(LIBFT) -o $(NAME)
 	@printf "$(CLEAR)$(GREEN)✓ $(NAME) successfully created!\n"

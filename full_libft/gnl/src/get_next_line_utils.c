@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	gnl_strlen(const char *s)
 {
 	int	i;
 
@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*gnl_calloc(size_t nmemb, size_t size)
 {
 	void	*res;
 	char	*r;
@@ -38,14 +38,14 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (res);
 }
 
-char	*ft_strdup(const char *s)
+char	*gnl_strdup(const char *s)
 {
 	int		i;
 	char	*dst;
 	size_t	len;
 
 	i = 0;
-	len = ft_strlen(s);
+	len = gnl_strlen(s);
 	dst = malloc(sizeof(char) * len + 1);
 	if (!dst)
 		return (NULL);
@@ -65,9 +65,9 @@ char	*gnl_strjoin(char const *s1, char const *s2)
 	int		len1;
 	int		len2;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	res = (char *)ft_calloc((len1 + len2) + 1, sizeof(char));
+	len1 = gnl_strlen(s1);
+	len2 = gnl_strlen(s2);
+	res = (char *)gnl_calloc((len1 + len2) + 1, sizeof(char));
 	if (!res)
 		return (NULL);
 	stock = res;

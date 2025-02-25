@@ -96,25 +96,37 @@ int	main(int ac, char **av, char **envp)
 	int			fd_in;
 	int			fd_out;
 
-	if (ac >= 2 && !ft_strcmp(av[1], "no_here_doc"))
-		no_here_doc(av[2]);
-	else
+	if (ac < 5)
+		exit(EXIT_FAILURE);
+	if (!ft_strcmp(av[1], "here_doc"))
 	{
-		fd_in = open(av[1], O_RDONLY);
-		if (fd_in < 0)
+		if (ac < 6)
+			exit(EXIT_FAILURE);
+		if (access(av[ac - 1], F_OK) == 0 && access(av[ac - 1], W_OK) == -1)
 		{
-			perror("Input File error");
+			perror("Output file error");
 			exit(EXIT_FAILURE);
 		}
+		fd_in = here_doc(av[2]);
+		fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
-	fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd_out < 0)
+	else
 	{
-		close(fd_in);
-		perror("Output File error");
-		exit(EXIT_FAILURE);
+		check_files_acess(av[1], av[ac - 1], &ac, &av);
+		fd_in = open(av[1], O_RDONLY);
+		fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
-	content = init_content(ac, av, envp);
+	/*	if (fd_in < 0 || fd_out < 0)
+		{
+			if (fd_in >= 0)
+				close(fd_in);
+			perror("File error");
+			exit(EXIT_FAILURE);
+		}*/
+	if (!ft_strcmp(av[1], "here_doc"))
+		content = init_content(ac - 4, av + 3, envp);
+	else
+		content = init_content(ac - 3, av + 2, envp);
 	pipex(content, fd_in, fd_out, envp);
 	free_content(content);
 	close(fd_in);
@@ -125,8 +137,8 @@ int	main(int ac, char **av, char **envp)
 	printf("cmd_path : %s\n", content->cmd_path);
 	execve(content->cmd_path, content->args, envp);
 	content = content->next;
-	}*/
-	/*printf("cmd : %s\n", content->args[0]);
+	}
+	printf("cmd : %s\n", content->args[0]);
 	printf("cmd_path : %s\n", content->cmd_path);
 	//execve(content->cmd_path, content->args, NULL);*/
 	return (0);

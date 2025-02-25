@@ -46,17 +46,18 @@ char	*get_cmd_path(char **envp, char *cmd)
 	return (NULL);
 }
 
-int    check_files_acess(char *infile, char *outfile)
+int    check_files_acess(char *infile, char *outfile, int *ac, char ***av)
 {
     if (access(infile, F_OK | R_OK) == -1)
     {
         perror("Input file error");
-        exit (EXIT_FAILURE);
+		*ac -= 1;
+		*av += 1;
     }
     if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
     {
         perror("Output file error");
-        exit (EXIT_FAILURE);
+        *ac -= 1;
     }
     return (1);
 }
@@ -101,19 +102,18 @@ void	free_content(t_content *head)
 	}
 }
 
-t_content *init_content(int ac, char **av, char **envp)
+t_content *init_content(int nb_cmd, char **av, char **envp)
 {
 	int	i;
 	t_content *head;
 	t_content *temp;
 
-	i = 2;
-	check_files_acess(av[1], av[ac - 1]);
+	i = 0;
 	head = create_node(av[i], envp);
 	if (!head)
 		exit (EXIT_FAILURE);
 	temp = head;
-	while (++i < ac - 1)
+	while (++i < nb_cmd)
 	{
 		temp->next = create_node(av[i], envp);
 		if (!temp->next)

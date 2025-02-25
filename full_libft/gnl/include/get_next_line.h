@@ -27,11 +27,11 @@
 # include <unistd.h>
 
 char		*get_next_line(int fd);
-size_t		ft_strlen(const char *s);
-void		*ft_calloc(size_t nmemb, size_t size);
-char		*ft_strjoin(char const *s1, char const *s2);
+size_t		gnl_strlen(const char *s);
+void		*gnl_calloc(size_t nmemb, size_t size);
+char		*gnl_strjoin(char const *s1, char const *s2);
 int			modif_strchr(const char *s, int c);
-char		*ft_strdup(const char *s);
+char		*gnl_strdup(const char *s);
 char		*stock_extend(char *stock, char *buffer);
 
 #endif

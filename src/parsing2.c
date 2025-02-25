@@ -12,36 +12,38 @@
 
 #include "pipex.h"
 
-void	no_here_doc(char *limiter)
+int	here_doc(char *limiter)
 {
 	char	*line;
 	int		pipes[2];
-	int		i;
 
-	i = 0;
+	limiter = ft_strjoin(limiter, "\n");
+	if (!limiter)
+		exit(EXIT_FAILURE);
+	if (pipe(pipes) == -1)
+	{
+		free(limiter);
+		exit(EXIT_FAILURE);
+	}
 	while (1)
 	{
-		line = get_next_next_line(STDIN_FILENO);
-		/*if (!line)
-			return ;*/
-		if (line == NULL)
+		write (1, "> ", 2);
+		line = get_next_line(STDIN_FILENO);
+		if (!line)
 		{
-			i = 1;
-			free(line);
-			break ;
+			free(limiter);
+			close(pipes[1]);
+			return (pipes[0]);
 		}
 		if (!ft_strcmp(line, limiter))
 		{
-			free(line);
+			free(limiter);
 			break ;
 		}
 		write (pipes[1], line, ft_strlen(line));
 		free(line);
 	}
 	close(pipes[1]);
-	if (i == 1)
-	{
-		close(pipes[0]);
-		exit(EXIT_FAILURE);
-	}
+	free(line);
+	return (pipes[0]);
 }
