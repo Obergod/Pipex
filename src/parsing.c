@@ -17,10 +17,11 @@ char	*get_cmd_path(char **envp, char *cmd)
 	int		i;
 	char	**cmd_path;
 	char	*tmp;
-	char *full_path;
+	char	*full_path;
 
 	i = -1;
 	while (envp[++i])
+	{
 		if (!strncmp(envp[i], "PATH=", 5))
 		{
 			cmd_path = ft_split(envp[i] + 5, ':');
@@ -28,8 +29,9 @@ char	*get_cmd_path(char **envp, char *cmd)
 				return (NULL);
 			break ;
 		}
+	}
 	if (strncmp(envp[i], "PATH=", 5))
-		exit(EXIT_FAILURE);
+		return (ft_free_split(cmd_path), NULL);
 	i = -1;
 	while (cmd_path[++i])
 	{
@@ -43,54 +45,54 @@ char	*get_cmd_path(char **envp, char *cmd)
 		}
 		free(full_path);
 	}
+	ft_free_split(cmd_path);
 	return (NULL);
 }
 
-int    check_files_acess(char *infile, char *outfile, int *ac, char ***av)
+int	check_files_acess(char *infile, char *outfile, int *ac)
 {
-    if (access(infile, F_OK | R_OK) == -1)
-    {
-        perror("Input file error");
-		*ac -= 1;
-		//*av += 1;
-    }
+	if (access(infile, F_OK | R_OK) == -1)
+	{
+		perror("Input file error");
+	}
 	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
 	{
 		perror("Output file error");
-		*av += 1;
 		*ac -= 1;
 	}
-    return (1);
+	return (1);
 }
 
-t_content *create_node(char *cmd_str, char **envp)
+t_content	*create_node(char *cmd_str, char **envp)
 {
 	t_content	*node;
 
+	if (!cmd_str || !cmd_str[0] || cmd_str[0] == ' ')
+		return (NULL);
 	node = malloc(sizeof(t_content));
 	if (!node)
 		return (NULL);
 	node->args = ft_split(cmd_str, ' ');
-	if (!node->args)
+	if (!node->args || !node->args[0])
 	{
-		free_content(node);
+		free(node);
 		return (NULL);
 	}
 	node->cmd_path = get_cmd_path(envp, node->args[0]);
-	printf("cmd_path : %s\n", node->cmd_path);
 	if (!node->cmd_path)
 	{
 		ft_free_split(node->args);
+		free(node);
 		return (NULL);
 	}
 	node->next = NULL;
 	node->pid = 0;
-	return (node);	
+	return (node);
 }
 
 void	free_content(t_content *head)
 {
-	t_content *temp;
+	t_content	*temp;
 
 	while (head)
 	{
@@ -104,32 +106,25 @@ void	free_content(t_content *head)
 	}
 }
 
-t_content *init_content(int nb_cmd, char **av, char **envp, int fd_in)
+t_content	*init_content(int nb_cmd, char **av, char **envp)
 {
-	int	i;
-	t_content *head;
-	t_content *temp;
+	int			i;
+	t_content	*head;
+	t_content	*temp;
 
 	i = 0;
-	if (fd_in == -1)
-		head = create_node(av[i + 1], envp);
-	else
-		head = create_node(av[i], envp);
+	head = create_node(av[i], envp);
 	if (!head)
-		exit (EXIT_FAILURE);
+		return (NULL);
 	temp = head;
-	printf("cmd_path %s\n", temp->cmd_path);
-	printf ("nb_cmd : %d\n", nb_cmd);
 	while (++i < nb_cmd)
 	{
 		temp->next = create_node(av[i], envp);
-		printf("cmd_path %s\n", temp->next->cmd_path);
-		printf("args %s\n", temp->next->args[0]);
-		printf("args %s\n", temp->next->args[1]);
 		if (!temp->next)
 		{
-			free_content(head);
-			exit (EXIT_FAILURE);
+			if (head)
+				free_content(head);
+			return (NULL);
 		}
 		temp = temp->next;
 	}

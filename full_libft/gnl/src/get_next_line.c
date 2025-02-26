@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 char	*stock_extend(char *stock, char *buffer)
 {
@@ -82,6 +83,11 @@ char	*after_line(char *stock)
 	i = 0;
 	while (stock[i] != '\n')
 		i++;
+	if (stock[i + 1] == '\0')
+	{
+		free(stock);
+		return (NULL);
+	}
 	s = gnl_strdup(stock + (i + 1));
 	if (!s)
 		return (NULL);
@@ -110,12 +116,9 @@ char	*get_next_line(int fd)
 		buff = gnl_strdup(stock[fd]);
 		return (free(stock[fd]), stock[fd] = NULL, buff);
 	}
-	else
-	{
-		buff = precise_line(stock[fd]);
-		stock[fd] = after_line(stock[fd]);
-		return (buff);
-	}
+	buff = precise_line(stock[fd]);
+	stock[fd] = after_line(stock[fd]);
+	return (buff);
 }
 /*
 #include <stdio.h>

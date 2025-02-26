@@ -11,65 +11,80 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
-/*
-void	parent_process()
-{
 
+void	cleanup_and_exit(t_content *content, int fd_in, int fd_out,
+		int exit_code)
+{
+	if (content)
+		free_content(content);
+	if (fd_in != -1)
+		close(fd_in);
+	if (fd_out != -1)
+		close(fd_out);
+	exit(exit_code);
 }
 
-void	child_process(int f1, )
+static void	close_pipes(int *pipes)
 {
-
-
+	close(pipes[0]);
+	close(pipes[1]);
 }
 
-*/
-void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
+static void	child_cleanup(t_content *cmd, int *pipes, int prev_pipe, int fd_out)
+{
+	if (cmd->next)
+		close_pipes(pipes);
+	if (prev_pipe != -1)
+		close(prev_pipe);
+	close(fd_out);
+	free_content(cmd);
+	exit(EXIT_FAILURE);
+}
+
+int	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 {
 	int			pipes[2];
-	int 		prev_pipe;
+	int			prev_pipe;
 	t_content	*head;
-	/*pid = malloc(sizeof(pid_t) * nb_cmd);
-	if (!pid)
-		return ;*/
-	/*if (fd_in < 0 || fd_out < 0)
-		return (exit);*/
+	int			status;
+
 	prev_pipe = fd_in;
 	head = cmd;
 	while (cmd)
 	{
 		if (cmd->next)
-			pipe(pipes);
+			if (pipe(pipes) == -1)
+				cleanup_and_exit(cmd, fd_in, fd_out, 1);
 		cmd->pid = fork();
 		if (cmd->pid < 0)
 		{
 			if (cmd->next)
-			{
-				close(pipes[1]);
-				close(pipes[0]);
-			}
-			perror("OMG NO\n");
+				close_pipes(pipes);
+			perror("Fork failed");
 			exit(1);
 		}
 		else if (cmd->pid == 0)
 		{
+			if (prev_pipe == -1 && cmd == head)
+				child_cleanup(cmd, pipes, prev_pipe, fd_out);
 			dup2(prev_pipe, STDIN_FILENO);
-			close(prev_pipe);
+			if (prev_pipe != -1)
+				close(prev_pipe);
 			if (cmd->next)
 			{
 				dup2(pipes[1], STDOUT_FILENO);
-				close(pipes[1]);
-				close(pipes[0]);
+				close_pipes(pipes);
 			}
 			else
 				dup2(fd_out, STDOUT_FILENO);
+			close(fd_out);
 			execve(cmd->cmd_path, cmd->args, envp);
-			perror("Child Process failed");
-			exit(EXIT_FAILURE);
+			perror("Command execution failed");
+			child_cleanup(cmd, pipes, prev_pipe, fd_out);
 		}
 		else
 		{
-			if (prev_pipe != fd_in)
+			if (prev_pipe != fd_in && prev_pipe != -1)
 				close(prev_pipe);
 			if (cmd->next)
 			{
@@ -79,22 +94,28 @@ void	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 			cmd = cmd->next;
 		}
 	}
+	if (prev_pipe != fd_in && prev_pipe != -1)
+		close(prev_pipe);
+	if (fd_in != -1)
+		close(fd_in);
+	close(fd_out);
 	cmd = head;
-	while(cmd)
+	while (cmd)
 	{
-		waitpid(cmd->pid, NULL, 0);
+		waitpid(cmd->pid, &status, 0);
+		if (!cmd->next && WIFEXITED(status))
+			return (WEXITSTATUS(status));
 		cmd = cmd->next;
 	}
-	if (prev_pipe != fd_in)
-		close(prev_pipe);
-	close(fd_in);
-	close(fd_out);
+	return (1);
 }
+
 int	main(int ac, char **av, char **envp)
 {
 	t_content	*content;
 	int			fd_in;
 	int			fd_out;
+	int			exit_status;
 
 	if (ac < 5)
 		exit(EXIT_FAILURE);
@@ -103,44 +124,26 @@ int	main(int ac, char **av, char **envp)
 		if (ac < 6)
 			exit(EXIT_FAILURE);
 		if (access(av[ac - 1], F_OK) == 0 && access(av[ac - 1], W_OK) == -1)
-		{
 			perror("Output file error");
-			exit(EXIT_FAILURE);
-		}
 		fd_in = here_doc(av[2]);
 		fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
 	else
 	{
-		check_files_acess(av[1], av[ac - 1], &ac, &av);
+		check_files_acess(av[1], av[ac - 1], &ac);
 		fd_in = open(av[1], O_RDONLY);
 		fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
-	/*	if (fd_in < 0 || fd_out < 0)
-		{
-			if (fd_in >= 0)
-				close(fd_in);
-			perror("File error");
-			exit(EXIT_FAILURE);
-		}*/
 	if (!ft_strcmp(av[1], "here_doc"))
-		content = init_content(ac - 4, av + 3, envp, fd_in);
+		content = init_content(ac - 4, av + 3, envp);
 	else
-		content = init_content(ac - 3, av + 2, envp, fd_in);
-	printf("tst");
-	pipex(content, fd_in, fd_out, envp);
-	free_content(content);
-	close(fd_in);
-	close(fd_out);
-	/*while (content)
+		content = init_content(ac - 3, av + 2, envp);
+	if (!content)
 	{
-	printf("cmd : %s\n", content->args[0]);
-	printf("cmd_path : %s\n", content->cmd_path);
-	execve(content->cmd_path, content->args, envp);
-	content = content->next;
+		perror("cmd error :");
+		cleanup_and_exit(NULL, fd_in, fd_out, 127);
 	}
-	printf("cmd : %s\n", content->args[0]);
-	printf("cmd_path : %s\n", content->cmd_path);
-	//execve(content->cmd_path, content->args, NULL);*/
-	return (0);
+	exit_status = pipex(content, fd_in, fd_out, envp);
+	cleanup_and_exit(content, fd_in, fd_out, exit_status);
+	return (exit_status);
 }

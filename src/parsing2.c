@@ -27,7 +27,7 @@ int	here_doc(char *limiter)
 	}
 	while (1)
 	{
-		write (1, "> ", 2);
+		write(1, "> ", 2);
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
 		{
@@ -40,7 +40,7 @@ int	here_doc(char *limiter)
 			free(limiter);
 			break ;
 		}
-		write (pipes[1], line, ft_strlen(line));
+		write(pipes[1], line, ft_strlen(line));
 		free(line);
 	}
 	close(pipes[1]);

@@ -13,34 +13,29 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include <unistd.h>
-# include <stdlib.h>
-# include <sys/wait.h>
-
 # include "get_next_line.h"
 # include "libft.h"
+# include <stdlib.h>
+# include <sys/wait.h>
+# include <unistd.h>
 //# include "ft_printf.h"
 
-typedef struct s_content {
-    char **args;
-    char *cmd_path;
-	pid_t	pid;
-    struct s_content *next;
-} t_content;
-
+typedef struct s_content
+{
+	char				**args;
+	char				*cmd_path;
+	pid_t				pid;
+	struct s_content	*next;
+}						t_content;
 
 /*****		A trier		******/
 
 /*****		parsing		******/
-char		*get_cmd_path(char **envp, char *cmd);
-int    		check_files_acess(char *infile, char *outfile, int *ac, char ***av);
-t_content	*create_node(char *cmd_str, char **envp);
-t_content 	*init_content(int ac, char **av, char **envp, int fd_in);
-void		free_content(t_content *head);
-int			here_doc(char *limiter);
+char					*get_cmd_path(char **envp, char *cmd);
+int						check_files_acess(char *infile, char *outfile, int *ac);
+t_content				*create_node(char *cmd_str, char **envp);
+t_content				*init_content(int nb_cmd, char **av, char **envp);
+void					free_content(t_content *head);
+int						here_doc(char *limiter);
 
-
-
-
-
-#endif 
+#endif
