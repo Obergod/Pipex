@@ -124,9 +124,10 @@ int	main(int ac, char **av, char **envp)
 			exit(EXIT_FAILURE);
 		}*/
 	if (!ft_strcmp(av[1], "here_doc"))
-		content = init_content(ac - 4, av + 3, envp);
+		content = init_content(ac - 4, av + 3, envp, fd_in);
 	else
-		content = init_content(ac - 3, av + 2, envp);
+		content = init_content(ac - 3, av + 2, envp, fd_in);
+	printf("tst");
 	pipex(content, fd_in, fd_out, envp);
 	free_content(content);
 	close(fd_in);

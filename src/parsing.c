@@ -52,13 +52,14 @@ int    check_files_acess(char *infile, char *outfile, int *ac, char ***av)
     {
         perror("Input file error");
 		*ac -= 1;
+		//*av += 1;
+    }
+	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
+	{
+		perror("Output file error");
 		*av += 1;
-    }
-    if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
-    {
-        perror("Output file error");
-        *ac -= 1;
-    }
+		*ac -= 1;
+	}
     return (1);
 }
 
@@ -76,6 +77,7 @@ t_content *create_node(char *cmd_str, char **envp)
 		return (NULL);
 	}
 	node->cmd_path = get_cmd_path(envp, node->args[0]);
+	printf("cmd_path : %s\n", node->cmd_path);
 	if (!node->cmd_path)
 	{
 		ft_free_split(node->args);
@@ -102,20 +104,28 @@ void	free_content(t_content *head)
 	}
 }
 
-t_content *init_content(int nb_cmd, char **av, char **envp)
+t_content *init_content(int nb_cmd, char **av, char **envp, int fd_in)
 {
 	int	i;
 	t_content *head;
 	t_content *temp;
 
 	i = 0;
-	head = create_node(av[i], envp);
+	if (fd_in == -1)
+		head = create_node(av[i + 1], envp);
+	else
+		head = create_node(av[i], envp);
 	if (!head)
 		exit (EXIT_FAILURE);
 	temp = head;
+	printf("cmd_path %s\n", temp->cmd_path);
+	printf ("nb_cmd : %d\n", nb_cmd);
 	while (++i < nb_cmd)
 	{
 		temp->next = create_node(av[i], envp);
+		printf("cmd_path %s\n", temp->next->cmd_path);
+		printf("args %s\n", temp->next->args[0]);
+		printf("args %s\n", temp->next->args[1]);
 		if (!temp->next)
 		{
 			free_content(head);

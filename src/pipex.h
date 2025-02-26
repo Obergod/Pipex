@@ -24,8 +24,8 @@
 typedef struct s_content {
     char **args;
     char *cmd_path;
-    struct s_content *next;
 	pid_t	pid;
+    struct s_content *next;
 } t_content;
 
 
@@ -35,7 +35,7 @@ typedef struct s_content {
 char		*get_cmd_path(char **envp, char *cmd);
 int    		check_files_acess(char *infile, char *outfile, int *ac, char ***av);
 t_content	*create_node(char *cmd_str, char **envp);
-t_content 	*init_content(int ac, char **av, char **envp);
+t_content 	*init_content(int ac, char **av, char **envp, int fd_in);
 void		free_content(t_content *head);
 int			here_doc(char *limiter);
 
