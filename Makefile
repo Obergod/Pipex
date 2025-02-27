@@ -17,9 +17,9 @@ LIBFT = full_libft/libftfull.a
 
 # Compilation
 CC = gcc
-#MAKEFLAGS += --silent
+MAKEFLAGS += --silent
 WFLAGS = -Wall -Werror -Wextra
-CFLAGS += -I$(INCS_DIR) -I$(LIBFT_INC) $(WFLAGS) -g3
+CFLAGS += -I$(INCS_DIR) -I$(LIBFT_INC) $(WFLAGS)
 
 
 #printing

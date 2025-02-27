@@ -43,7 +43,7 @@ char	*get_cmd_path(char **envp, char *cmd)
 	i = -1;
 	while (envp[++i])
 	{
-		if (!strncmp(envp[i], "PATH=", 5))
+		if (!ft_strncmp(envp[i], "PATH=", 5))
 		{
 			cmd_path = ft_split(envp[i] + 5, ':');
 			if (!cmd_path)
@@ -51,7 +51,7 @@ char	*get_cmd_path(char **envp, char *cmd)
 			break ;
 		}
 	}
-	if (strncmp(envp[i], "PATH=", 5))
+	if (ft_strncmp(envp[i], "PATH=", 5))
 		return (NULL);
 	return (try_paths(cmd_path, cmd));
 }

@@ -59,6 +59,8 @@ int	main(int ac, char **av, char **envp)
 	int			fd_out;
 	int			exit_status;
 
+	if (!env || !evp[0])
+		exit(EXIT_FAILURE);
 	if (ac < 5)
 		exit(EXIT_FAILURE);
 	if (!ft_strcmp(av[1], "here_doc"))
@@ -72,6 +74,8 @@ int	main(int ac, char **av, char **envp)
 		cleanup_and_exit(NULL, fd_in, fd_out, 127);
 	}
 	exit_status = pipex(content, fd_in, fd_out, envp);
+	if (access(av[ac - 1], F_OK) == 0 && access(av[ac - 1], W_OK) == -1)
+		exit_status = 1;
 	cleanup_and_exit(content, fd_in, fd_out, exit_status);
 	return (exit_status);
 }
