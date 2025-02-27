@@ -12,26 +12,12 @@
 
 #include "pipex.h"
 
-char	*get_cmd_path(char **envp, char *cmd)
+static char	*try_paths(char **cmd_path, char *cmd)
 {
 	int		i;
-	char	**cmd_path;
 	char	*tmp;
 	char	*full_path;
 
-	i = -1;
-	while (envp[++i])
-	{
-		if (!strncmp(envp[i], "PATH=", 5))
-		{
-			cmd_path = ft_split(envp[i] + 5, ':');
-			if (!cmd_path)
-				return (NULL);
-			break ;
-		}
-	}
-	if (strncmp(envp[i], "PATH=", 5))
-		return (ft_free_split(cmd_path), NULL);
 	i = -1;
 	while (cmd_path[++i])
 	{
@@ -49,18 +35,25 @@ char	*get_cmd_path(char **envp, char *cmd)
 	return (NULL);
 }
 
-int	check_files_acess(char *infile, char *outfile, int *ac)
+char	*get_cmd_path(char **envp, char *cmd)
 {
-	if (access(infile, F_OK | R_OK) == -1)
+	int		i;
+	char	**cmd_path;
+
+	i = -1;
+	while (envp[++i])
 	{
-		perror("Input file error");
+		if (!strncmp(envp[i], "PATH=", 5))
+		{
+			cmd_path = ft_split(envp[i] + 5, ':');
+			if (!cmd_path)
+				return (NULL);
+			break ;
+		}
 	}
-	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
-	{
-		perror("Output file error");
-		*ac -= 1;
-	}
-	return (1);
+	if (strncmp(envp[i], "PATH=", 5))
+		return (NULL);
+	return (try_paths(cmd_path, cmd));
 }
 
 t_content	*create_node(char *cmd_str, char **envp)

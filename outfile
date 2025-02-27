@@ -1,13 +1,9 @@
-t$$
-t$$
-EOf$$
-t$$
-t$$
-t$$
-t$$
-t$$
-t$$
-t$$
-t$$
-t$$
-t$$
+total 128$
+drwxr-xr-x 5 mafioron 2024_paris    221 Feb 26 21:53 42_pipex_tester$
+drwxr-xr-x 6 mafioron 2024_paris     97 Feb 27 15:54 full_libft$
+-rw-r--r-- 1 mafioron 2024_paris      9 Feb 24 20:33 infile$
+-rw-r--r-- 1 mafioron 2024_paris   2473 Feb 27 15:52 Makefile$
+-rw-r--r-- 1 mafioron 2024_paris      0 Feb 27 16:08 outfile$
+-rwxrwxrwx 1 mafioron 2024_paris      2 Feb 26 16:20 output$
+-rwxr-xr-x 1 mafioron 2024_paris 110112 Feb 27 16:03 pipex$
+drwxr-xr-x 2 mafioron 2024_paris   4096 Feb 27 16:08 src$
