@@ -23,7 +23,11 @@ void	process_child(t_content *cmd, int *pipes, int prev_pipe, int fd_out)
 		close_pipes(pipes);
 	}
 	else
+	{
 		dup2(fd_out, STDOUT_FILENO);
+		if (pipes[0] != -1)
+			close_pipes(pipes);
+	}
 	close(fd_out);
 }
 
