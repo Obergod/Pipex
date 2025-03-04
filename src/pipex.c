@@ -59,9 +59,7 @@ int	main(int ac, char **av, char **envp)
 	int			fd_out;
 	int			exit_status;
 
-	if (!env || !evp[0])
-		exit(EXIT_FAILURE);
-	if (ac < 5)
+	if (!envp || !envp[0] || ac < 5)
 		exit(EXIT_FAILURE);
 	if (!ft_strcmp(av[1], "here_doc"))
 		init_heredoc(av, ac, &fd_in, &fd_out);

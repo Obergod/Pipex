@@ -40,20 +40,26 @@ char	*get_cmd_path(char **envp, char *cmd)
 	int		i;
 	char	**cmd_path;
 
+	if (!cmd)
+		return (NULL);
+	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
+	{
+		if (access(cmd, F_OK | X_OK) == 0)
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
 	i = -1;
-	while (envp[++i])
+	while (envp && envp[++i])
 	{
 		if (!ft_strncmp(envp[i], "PATH=", 5))
 		{
 			cmd_path = ft_split(envp[i] + 5, ':');
 			if (!cmd_path)
 				return (NULL);
-			break ;
+			return (try_paths(cmd_path, cmd));
 		}
 	}
-	if (ft_strncmp(envp[i], "PATH=", 5))
-		return (NULL);
-	return (try_paths(cmd_path, cmd));
+	return (NULL);
 }
 
 t_content	*create_node(char *cmd_str, char **envp)

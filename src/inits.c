@@ -40,7 +40,7 @@ int	init_pipe(t_content *cmd, int *pipes, int fd_in, int fd_out)
 		if (cmd->next)
 			close_pipes(pipes);
 		perror("Fork failed");
-		exit(1);
+		cleanup_and_exit(cmd, fd_in, fd_out, 1);
 	}
 	return (0);
 }
