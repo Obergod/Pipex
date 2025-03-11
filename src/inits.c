@@ -24,9 +24,17 @@ void	init_heredoc(char **av, int ac, int *fd_in, int *fd_out)
 
 void	init_files(char **av, int ac, int *fd_in, int *fd_out)
 {
-	check_files_acess(av[1], av[ac - 1], &ac);
 	*fd_in = open(av[1], O_RDONLY);
+	if (*fd_in == -1)
+		perror(av[1]);
 	*fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (*fd_out == -1)
+	{
+		if (*fd_in != -1)
+			close(*fd_in);
+		perror(av[ac - 1]);
+		exit(1);
+	}
 }
 
 int	init_pipe(t_content *cmd, int *pipes, int fd_in, int fd_out)

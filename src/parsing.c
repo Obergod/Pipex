@@ -78,12 +78,6 @@ t_content	*create_node(char *cmd_str, char **envp)
 		return (NULL);
 	}
 	node->cmd_path = get_cmd_path(envp, node->args[0]);
-	if (!node->cmd_path)
-	{
-		ft_free_split(node->args);
-		free(node);
-		return (NULL);
-	}
 	node->next = NULL;
 	node->pid = 0;
 	return (node);
