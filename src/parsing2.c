@@ -34,13 +34,7 @@ static void	handle_line(char *line, char *limiter, int *pipes)
 		close(pipes[1]);
 		return ;
 	}
-	if (!ft_strcmp(line, limiter))
-	{
-		free(line);
-		return ;
-	}
 	write(pipes[1], line, ft_strlen(line));
-	free(line);
 }
 
 int	here_doc(char *limiter)
@@ -63,6 +57,7 @@ int	here_doc(char *limiter)
 		handle_line(line, limiter, pipes);
 		if (!line || !ft_strcmp(line, limiter))
 			break ;
+		free(line);
 	}
 	free(limiter);
 	close(pipes[1]);

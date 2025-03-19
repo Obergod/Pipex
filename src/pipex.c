@@ -12,6 +12,12 @@
 
 #include "pipex.h"
 
+void	execve_err(t_content *cmd, int *pipes, int prev_pipe, int fd_out)
+{
+	perror(cmd->args[0]);
+	child_cleanup(cmd, pipes, prev_pipe, fd_out);
+}
+
 int	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 {
 	int			pipes[2];
@@ -29,8 +35,7 @@ int	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 				child_cleanup(cmd, pipes, prev_pipe, fd_out);
 			process_child(cmd, pipes, prev_pipe, fd_out);
 			execve(cmd->cmd_path, cmd->args, envp);
-			perror(cmd->args[0]);
-			child_cleanup(cmd, pipes, prev_pipe, fd_out);
+			execve_err(cmd, pipesm prev_pipe, fd_out);
 		}
 		else
 		{
