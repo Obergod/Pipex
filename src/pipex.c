@@ -35,7 +35,7 @@ int	pipex(t_content *cmd, int fd_in, int fd_out, char **envp)
 				child_cleanup(cmd, pipes, prev_pipe, fd_out);
 			process_child(cmd, pipes, prev_pipe, fd_out);
 			execve(cmd->cmd_path, cmd->args, envp);
-			execve_err(cmd, pipesm prev_pipe, fd_out);
+			execve_err(cmd, pipes, prev_pipe, fd_out);
 		}
 		else
 		{
